@@ -9,10 +9,6 @@ on:
 jobs:
   update:
     runs-on: windows-latest
-run: |
-  pacman -Scc --noconfirm   # 清理 pacman 缓存
-  pacman -Syu --noconfirm   # 更新系统和软件包
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
