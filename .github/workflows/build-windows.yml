@@ -1,13 +1,10 @@
 name: Build Windows Executable
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
-  pull_request:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Update MSYS2"]
+    types:
+      - completed
 
 jobs:
   build:
@@ -23,14 +20,6 @@ jobs:
           node-version: '20'
 
       - name: Set up MSYS2 environment
-        uses: msys2/setup-msys2@v2
-
-      - name: Update MSYS2 and exit
-        shell: msys2 {0}
-        run: |
-          pacman -Syu --noconfirm || exit 0
-
-      - name: Restart MSYS2 environment
         uses: msys2/setup-msys2@v2
 
       - name: Install dependencies
