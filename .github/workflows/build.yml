@@ -23,6 +23,7 @@ jobs:
       run: |
         pacman -Syu --noconfirm
         pacman -S --noconfirm git mingw-w64-x86_64-gcc make automake autoconf libtool pkg-config
+        pacman -S --noconfirm mingw-w64-x86_64-libplist mingw-w64-x86_64-libimobiledevice
 
     - name: Run CMake
       run: |
