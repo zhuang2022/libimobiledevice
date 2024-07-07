@@ -26,7 +26,7 @@ jobs:
 
     - name: Run CMake
       run: |
-        cmake -B D:\a\libimobiledevice\libimobiledevice\build -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Release -S D:\a\libimobiledevice\libimobiledevice
+        cmake -B D:\a\libimobiledevice\libimobiledevice\build -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -S D:\a\libimobiledevice\libimobiledevice
         cmake --build D:\a\libimobiledevice\libimobiledevice\build --config Release
 
     - name: Archive artifacts
