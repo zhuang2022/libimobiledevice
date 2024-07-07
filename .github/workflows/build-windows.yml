@@ -26,6 +26,7 @@ jobs:
         uses: msys2/setup-msys2@v2
 
       - name: Install dependencies
+        shell: msys2 {0}
         run: |
           pacman -Syu --noconfirm
           pacman -S --needed --noconfirm mingw-w64-x86_64-toolchain
@@ -34,6 +35,7 @@ jobs:
           pacman -S --needed --noconfirm mingw-w64-x86_64-openssl
 
       - name: Configure and build
+        shell: msys2 {0}
         run: |
           mkdir -p build
           cd build
@@ -41,7 +43,7 @@ jobs:
           cmake --build .
 
       - name: List files in build directory
-        run: ls -R build
+        run: dir build
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
