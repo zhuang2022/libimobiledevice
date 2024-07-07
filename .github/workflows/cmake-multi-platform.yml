@@ -1,0 +1,39 @@
+name: Build for Windows
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up MinGW environment
+        uses: msys2/setup-msys2@v2
+
+      - name: Install dependencies
+        run: |
+          pacman -Sy --noconfirm
+          pacman -S --noconfirm base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake
+
+      - name: Build libimobiledevice
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          cmake --build .
+
+      - name: Upload artifacts
+        if: success()
+        uses: actions/upload-artifact@v2
+        with:
+          name: libimobiledevice-windows
+          path: build/libimobiledevice.exe
