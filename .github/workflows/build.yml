@@ -1,0 +1,37 @@
+name: Build libimobiledevice
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up MSYS2
+      uses: msys2/setup-msys2@v2
+      with:
+        update: true
+
+    - name: Install dependencies
+      run: |
+        pacman -Syu --noconfirm
+        pacman -S --noconfirm git mingw-w64-x86_64-gcc make automake autoconf libtool pkg-config
+
+    - name: Build project
+      run: |
+        ./autogen.sh
+        ./configure
+        make
+
+    - name: Archive artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: libimobiledevice-exe
+        path: path/to/your/executable.exe
