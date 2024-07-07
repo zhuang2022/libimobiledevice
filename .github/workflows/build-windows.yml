@@ -1,1 +1,55 @@
 
+touch .github/workflows/build-windows.yml
+
+# 在 .github/workflows/build-windows.yml 中添加以下内容
+
+name: Build Windows Executable
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          install: >-
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-make
+            mingw-w64-x86_64-pkg-config
+
+      - name: Set up MSYS2 environment
+        run: |
+          echo "::add-path::C:\\msys64\\mingw64\\bin"
+          echo "::add-path::C:\\msys64\\usr\\bin"
+
+      - name: Configure and Build
+        run: |
+          mkdir build
+          cd build
+          cmake -G "MSYS Makefiles" ..
+          make
+
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: build/
+
+# 添加并提交新的 workflow 文件
+git add .github/workflows/build-windows.yml
+git commit -m "Add Windows build workflow"
+git push origin master
