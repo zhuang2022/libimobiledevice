@@ -21,11 +21,13 @@ jobs:
         uses: msys2/setup-msys2@v2
 
       - name: Install dependencies
+
         run: |
-          pacman -Scc --noconfirm   # 清理 pacman 缓存
-          pacman -Syu --noconfirm   # 更新系统和软件包
-          pacman -S --needed --noconfirm mingw-w64-x86_64-toolchain
-          pacman -S --needed --noconfirm mingw-w64-x86_64-cmake
+  pacman -Scc --noconfirm   # 清理 pacman 缓存
+  pacman -Syu --noconfirm --noprogressbar --needed   # 更新系统和软件包，禁用进度条
+  pacman -S --needed --noconfirm mingw-w64-x86_64-toolchain
+  pacman -S --needed --noconfirm mingw-w64-x86_64-cmake
+
 
       - name: Configure and build
         run: |
