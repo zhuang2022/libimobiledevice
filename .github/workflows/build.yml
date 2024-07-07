@@ -24,14 +24,13 @@ jobs:
         pacman -Syu --noconfirm
         pacman -S --noconfirm git mingw-w64-x86_64-gcc make automake autoconf libtool pkg-config
 
-    - name: Build project
+    - name: Run CMake
       run: |
-        ./autogen.sh
-        ./configure
-        make
+        cmake -B D:\a\libimobiledevice\libimobiledevice\build -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Release -S D:\a\libimobiledevice\libimobiledevice
+        cmake --build D:\a\libimobiledevice\libimobiledevice\build --config Release
 
     - name: Archive artifacts
       uses: actions/upload-artifact@v2
       with:
         name: libimobiledevice-exe
-        path: path/to/your/executable.exe
+        path: D:\a\libimobiledevice\libimobiledevice\build\Release\libimobiledevice.exe
