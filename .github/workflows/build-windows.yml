@@ -1,10 +1,13 @@
 name: Build Windows Executable
 
 on:
-  workflow_run:
-    workflows: ["Update MSYS2"]
-    types:
-      - completed
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -12,34 +15,24 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
+        uses: actions/checkout@v2
 
       - name: Set up MSYS2 environment
         uses: msys2/setup-msys2@v2
 
       - name: Install dependencies
-        shell: msys2 {0}
         run: |
+          pacman -Scc --noconfirm   # 清理 pacman 缓存
+          pacman -Syu --noconfirm   # 更新系统和软件包
           pacman -S --needed --noconfirm mingw-w64-x86_64-toolchain
           pacman -S --needed --noconfirm mingw-w64-x86_64-cmake
-          pacman -S --needed --noconfirm mingw-w64-x86_64-pkg-config
-          pacman -S --needed --noconfirm mingw-w64-x86_64-openssl
 
       - name: Configure and build
-        shell: msys2 {0}
         run: |
-          mkdir -p build
+          mkdir build
           cd build
-          cmake -G "MinGW Makefiles" ..
+          cmake ..
           cmake --build .
-
-      - name: List files in build directory
-        run: dir build
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
