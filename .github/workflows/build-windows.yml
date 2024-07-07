@@ -35,6 +35,9 @@ jobs:
           cmake -G "MinGW Makefiles" ..
           cmake --build .
 
+      - name: List files in build directory
+        run: ls -R build
+
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
