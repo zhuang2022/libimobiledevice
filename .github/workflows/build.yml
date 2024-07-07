@@ -25,6 +25,10 @@ jobs:
         pacman -S --noconfirm git mingw-w64-x86_64-gcc make automake autoconf libtool pkg-config
         pacman -S --noconfirm mingw-w64-x86_64-libplist mingw-w64-x86_64-libimobiledevice
 
+    - name: Replace unistd.h
+      run: |
+        ./replace_unistd.ps1
+
     - name: Run CMake
       run: |
         cmake -B D:\a\libimobiledevice\libimobiledevice\build -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -S D:\a\libimobiledevice\libimobiledevice
