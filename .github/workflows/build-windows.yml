@@ -1,4 +1,5 @@
 name: Build Windows Executable
+
 on:
   push:
     branches:
@@ -24,7 +25,7 @@ jobs:
           pacman -S --needed --noconfirm mingw-w64-x86_64-toolchain
           pacman -S --needed --noconfirm mingw-w64-x86_64-cmake
 
-      - name: Build project
+      - name: Configure and build
         run: |
           mkdir build
           cd build
@@ -35,4 +36,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: windows-executable
-          path: build/my_app.exe
+          path: build/idevicebackup2.exe
