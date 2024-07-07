@@ -27,15 +27,18 @@ jobs:
 
     - name: Replace unistd.h
       run: |
-        ./replace_unistd.ps1
+        echo 'Get-ChildItem -Recurse -Include *.c,*.h,*.cpp | ForEach-Object { (Get-Content $_.FullName) -replace "#include <unistd.h>", "#ifdef _WIN32`n#include <windows.h>`n#else`n#include <unistd.h>`n#endif" | Set-Content $_.FullName }' > replace_unistd.ps1
+        pwsh ./replace_unistd.ps1
 
-    - name: Run CMake
+    - name: Configure CMake
       run: |
-        cmake -B D:\a\libimobiledevice\libimobiledevice\build -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -S D:\a\libimobiledevice\libimobiledevice
-        cmake --build D:\a\libimobiledevice\libimobiledevice\build --config Release
+        cmake -B build -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -S .
+
+    - name: Build
+      run: cmake --build build --config Release
 
     - name: Archive artifacts
       uses: actions/upload-artifact@v2
       with:
         name: libimobiledevice-exe
-        path: D:\a\libimobiledevice\libimobiledevice\build\Release\libimobiledevice.exe
+        path: build\Release\libimobiledevice.exe
