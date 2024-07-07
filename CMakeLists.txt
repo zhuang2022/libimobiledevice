@@ -1,31 +1,23 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.15)
+project(libimobiledevice)
 
-# 设置项目名称和语言
-project(libimobiledevice VERSION 1.0 LANGUAGES C CXX)
-
-# 指定 C++ 标准
 set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_C_STANDARD 99)
 
-# 查找依赖项
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(PLIST REQUIRED libplist)
-pkg_check_modules(LIBIMOBILEDEVICE REQUIRED libimobiledevice)
+# Set paths to manually installed libraries
+set(LIBPLIST_INCLUDE_DIR "path_to_libplist_include")
+set(LIBIMOBILEDEVICE_INCLUDE_DIR "path_to_libimobiledevice_include")
+set(LIBIMOBILEDEVICE_LIB_DIR "path_to_libimobiledevice_lib")
 
-# 包含头文件路径
-include_directories(${PLIST_INCLUDE_DIRS})
-include_directories(${LIBIMOBILEDEVICE_INCLUDE_DIRS})
+# Add include directories
+include_directories(${LIBPLIST_INCLUDE_DIR})
+include_directories(${LIBIMOBILEDEVICE_INCLUDE_DIR})
 
-# 添加源文件
-file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.c" "include/*.h")
+# Add library directories
+link_directories(${LIBIMOBILEDEVICE_LIB_DIR})
 
-# 确保源文件存在
-if(NOT SOURCES)
-    message(FATAL_ERROR "No source files found.")
-endif()
+# Add your source files here
+add_executable(libimobiledevice main.cpp)
 
-# 添加可执行文件
-add_executable(libimobiledevice ${SOURCES})
-
-# 链接必要的库
-target_link_libraries(libimobiledevice ${PLIST_LIBRARIES} ${LIBIMOBILEDEVICE_LIBRARIES})
+# Link libraries
+target_link_libraries(libimobiledevice libimobiledevice)
