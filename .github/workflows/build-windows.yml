@@ -19,23 +19,20 @@ jobs:
 
       - name: Set up MSYS2 environment
         uses: msys2/setup-msys2@v2
-        
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'  # Use Node.js version 16 or higher
-        
+
       - name: Install dependencies
         run: |
           pacman -Syu --noconfirm
           pacman -S --needed --noconfirm mingw-w64-x86_64-toolchain
           pacman -S --needed --noconfirm mingw-w64-x86_64-cmake
+          pacman -S --needed --noconfirm mingw-w64-x86_64-pkg-config
+          pacman -S --needed --noconfirm mingw-w64-x86_64-openssl
 
       - name: Configure and build
         run: |
-          mkdir build
+          mkdir -p build
           cd build
-          cmake ..
+          cmake -G "MinGW Makefiles" ..
           cmake --build .
 
       - name: Upload artifact
