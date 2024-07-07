@@ -1,44 +1,46 @@
-name: Build libimobiledevice
+name: Build libimobiledevice for Windows
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-  build:
+  build-windows:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up MSYS2
-      uses: msys2/setup-msys2@v2
-      with:
-        update: true
+      - name: Set up MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
 
-    - name: Install dependencies
-      run: |
-        pacman -Syu --noconfirm
-        pacman -S --noconfirm git mingw-w64-x86_64-gcc make automake autoconf libtool pkg-config
-        pacman -S --noconfirm mingw-w64-x86_64-libplist mingw-w64-x86_64-libimobiledevice
+      - name: Install dependencies
+        run: |
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm git mingw-w64-x86_64-gcc make automake autoconf libtool pkg-config
+          pacman -S --noconfirm mingw-w64-x86_64-libplist mingw-w64-x86_64-libimobiledevice
 
-    - name: Replace unistd.h
-      run: |
-        echo 'Get-ChildItem -Recurse -Include *.c,*.h,*.cpp | ForEach-Object { (Get-Content $_.FullName) -replace "#include <unistd.h>", "#ifdef _WIN32`n#include <windows.h>`n#else`n#include <unistd.h>`n#endif" | Set-Content $_.FullName }' > replace_unistd.ps1
-        pwsh ./replace_unistd.ps1
+      - name: Replace unistd.h
+        run: |
+          echo 'Get-ChildItem -Recurse -Include *.c,*.h,*.cpp | ForEach-Object { (Get-Content $_.FullName) -replace "#include <unistd.h>", "#ifdef _WIN32`n#include <windows.h>`n#else`n#include <unistd.h>`n#endif" | Set-Content $_.FullName }' > replace_unistd.ps1
+          pwsh ./replace_unistd.ps1
 
-    - name: Configure CMake
-      run: |
-        cmake -B build -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -S .
+      - name: Configure CMake
+        run: |
+          cmake -B build -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -S .
 
-    - name: Build
-      run: cmake --build build --config Release
+      - name: Build
+        run: cmake --build build --config Release
 
-    - name: Archive artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: libimobiledevice-exe
-        path: build\Release\libimobiledevice.exe
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: libimobiledevice-exe
+          path: build\Release\libimobiledevice.exe
