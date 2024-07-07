@@ -25,10 +25,17 @@ jobs:
       - name: Set up MSYS2 environment
         uses: msys2/setup-msys2@v2
 
+      - name: Update MSYS2 and exit
+        shell: msys2 {0}
+        run: |
+          pacman -Syu --noconfirm || exit 0
+
+      - name: Restart MSYS2 environment
+        uses: msys2/setup-msys2@v2
+
       - name: Install dependencies
         shell: msys2 {0}
         run: |
-          pacman -Syu --noconfirm
           pacman -S --needed --noconfirm mingw-w64-x86_64-toolchain
           pacman -S --needed --noconfirm mingw-w64-x86_64-cmake
           pacman -S --needed --noconfirm mingw-w64-x86_64-pkg-config
