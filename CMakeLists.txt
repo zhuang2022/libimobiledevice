@@ -1,17 +1,26 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.13)
+
 project(libimobiledevice)
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_C_STANDARD 99)
+if(MSVC)
+    add_compile_options(/utf-8)
+endif()
 
-# Assuming source files are in the src directory
-add_library(libimobiledevice SHARED
-    src/source_file1.cpp
-    src/source_file2.cpp
-    # Add more source files as needed
-)
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-# Link libraries if needed
-target_link_libraries(libimobiledevice
-    other_library  # Replace with actual libraries needed
-)
+if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
+    message("CMAKE_CURRENT_SOURCE_DIR==CMAKE_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR}")
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG          ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE        ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG          ${CMAKE_CURRENT_SOURCE_DIR}/bin/lib)
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE        ${CMAKE_CURRENT_SOURCE_DIR}/bin/lib)
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_CURRENT_SOURCE_DIR}/bin/lib)
+endif()
+
+add_subdirectory(libplist)
+add_subdirectory(libimobiledevice-glue)
+add_subdirectory(libusbmuxd)
+add_subdirectory(libimobiledevice)
+add_subdirectory(libirecovery)
+add_subdirectory(idevicerestore)
